@@ -1,0 +1,41 @@
+version: '3'
+services:
+  
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --web.enable-otlp-receiver  # Critical for OTLP support
+    # - --enable-feature=otlp-deltatocumulative  # Critical for delta support
+    - --storage.tsdb.retention.time=15d
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+  
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    ports:
+      - 8000:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Add only if you have your containers running on Mac
+    networks:
+      - monitoring
+
+
+networks:
+  monitoring:
+    external: true
