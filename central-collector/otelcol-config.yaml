@@ -1,0 +1,64 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+extensions:
+  bearertokenauth/withscheme:
+    scheme: "Bearer"
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJpYXQiOjE3MDgxMjY0MDB9.XvGq3jK6czp3A2Y5R9P-7T3Fd8U6B4MQuLg9bq9ZQxU"
+
+processors:
+  batch:
+    send_batch_max_size: 10000
+    timeout: 2s
+
+exporters:
+  otlphttp/prometheus:
+    endpoint: "http://prometheus:9090/api/v1/otlp/v1/metrics"
+    tls:
+      insecure: true
+
+  zipkin/nontls:
+    endpoint: "http://localhost:9411/api/v2/spans"
+    format: proto
+    default_service_name: otel-collector-service
+  
+  prometheus:
+    endpoint: "localhost:9090"
+
+  awscloudwatchlogs:
+    log_group_name: "/ecs/otel"
+    log_stream_name: "tastecard/logs"
+    log_retention: 30
+    region: "us-east-1"
+    sending_queue:
+      enabled: true
+
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+service:
+  extensions: [ ]
+  telemetry:
+    logs:
+    metrics:
+    traces:
+  pipelines:
+    traces: 
+      receivers: [otlp]
+      processors: []
+      exporters: [debug, zipkin/nontls]
+    metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [debug, otlphttp/prometheus, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: []
+      exporters: [debug, awscloudwatchlogs]
