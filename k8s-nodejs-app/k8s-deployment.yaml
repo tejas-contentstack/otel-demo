@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      containers:
+        - name: nodejs-app
+          image: nodejs-app
+          imagePullPolicy: Never
+          env:
+            - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
+            - name: OTEL_LOGS_EXPORTER
+              value: "otlp"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "https://2cdd-103-215-237-249.ngrok-free.app"
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "http/json"
+            - name: OTEL_NODE_RESOURCE_DETECTORS
+              value: "env,host,os"
+            - name: OTEL_SERVICE_NAME
+              value: "nodejs-app"
+            - name: NODE_OPTIONS
+              value: "--require @opentelemetry/auto-instrumentations-node/register"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service
+spec:
+  selector:
+    app: nodejs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
