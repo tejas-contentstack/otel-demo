@@ -1,6 +1,6 @@
 # Node.js Kubernetes App with OpenTelemetry Auto-Instrumentation
 
-This project is a simple Node.js application running in a Kubernetes cluster with OpenTelemetry auto-instrumentation enabled. It captures **traces, metrics, and logs** automatically.
+This project is a simple Node.js application running in a Kubernetes cluster with OpenTelemetry auto-instrumentation enabled. It captures **traces, metrics** automatically.
 
 ---
 
@@ -78,7 +78,7 @@ Now, open [http://localhost:8080](http://localhost:8080/) in your browser.
 ---
 
 ## 📊 **OpenTelemetry Auto-Instrumentation**
-This project uses **OpenTelemetry auto-instrumentation** to capture logs, metrics, and traces without modifying source code.
+This project uses **OpenTelemetry auto-instrumentation** to capture metrics, and traces without modifying source code.
 
 ### **Environment Variables (Defined in k8s-deployment.yaml)**
 ```yaml
