@@ -19,6 +19,14 @@ npm install
 
 ### **3️⃣ Run the App Locally**
 ```bash
+OTEL_TRACES_EXPORTER=otlp \
+OTEL_METRICS_EXPORTER=otlp \
+OTEL_LOGS_EXPORTER=otlp \
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 \
+OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf \
+OTEL_NODE_RESOURCE_DETECTORS=env,host,os \
+OTEL_SERVICE_NAME=nodejs-app \
+NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register" \
 node server.js
 ```
 
