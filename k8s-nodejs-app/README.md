@@ -9,7 +9,7 @@ This project is a simple Node.js application running in a Kubernetes cluster wit
 ### **1️⃣ Clone the Repository**
 ```bash
 git clone <repo-url>
-cd nodejs-k8s-otel
+cd k8s-nodejs-app
 ```
 
 ### **2️⃣ Install Dependencies**
